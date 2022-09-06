@@ -2,17 +2,23 @@ import React, { useEffect, useState } from "react";
 import Icon from "./components/atoms/Icon";
 import Image from "./components/atoms/Image";
 
-type gender = "male" | "female" | undefined;
+interface UserProps {
+  name: string;
+  age: number;
+  gender: 'male' | 'female' | '';
+}
 function App() {
-  const [name, setName] = useState<string>("");
-  const [age, setAge] = useState<number>(-1);
-  const [gender, setGender] = useState<gender>(undefined);
+  const [user, setUser] = useState<UserProps>({
+    name: '',
+    age: -1,
+    gender: ''
+  })
   useEffect(() => {
-    if (name === '') {
-      setGender(undefined)
-      setAge(-1);
+    if (user.name === '') {
+      setUser({...user, gender: "", age: -1})
+      
     }
-  }, [name])
+  }, [user.name])
   return (
     <div
       style={{
@@ -30,30 +36,30 @@ function App() {
         type="text"
         placeholder="Enter your name"
         name="name"
-        onChange={(e) => setName(e.target.value)}
+        onChange={(e) => setUser({ ...user, name: e.target.value })}
       />
-      {name !== "" && (
+      {user.name !== "" && (
         <input
           style={{ height: "30px", width: "220px" }}
           type="number"
           placeholder="Enter your age"
           name="age"
-          onChange={(e) => setAge(Number(e.target.value))}
+          onChange={(e) => setUser({ ...user, age: Number(e.target.value)})}
         />
       )}
-      {age > 0 && <Image age={age} />}
+      {user.age > 0 && <Image age={user.age} />}
 
-      {name !== "" && (
+      {user.name !== "" && (
         <select
           style={{ height: "30px", width: "220px" }}
           name="gender"
           id="gender"
           onChange={(e) => {
-            e.target.value === "male"
-              ? setGender("male")
-              : e.target.value === "female"
-              ? setGender("female")
-              : setGender(undefined);
+            if (e.target.value === "male" || e.target.value === "female") {
+              setUser({...user, gender: e.target.value})
+            } else {
+              setUser({...user, gender: ""})
+            }
           }}
         >
           <option value="select gender">select gender</option>
@@ -61,7 +67,7 @@ function App() {
           <option value="female">female</option>
         </select>
       )}
-      <div style={{}}>{gender && <Icon gender={gender} />}</div>
+      <div style={{}}>{user.gender !== "" && <Icon gender={user.gender} />}</div>
     </div>
   );
 }
